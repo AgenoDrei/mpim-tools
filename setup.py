@@ -31,7 +31,7 @@ setup(
         [console_scripts]
         mpim-tools=mpim_tools.cli:cli
     """,
-    install_requires=["click"],
+    install_requires=["click", "pandas", "openpyxl", "requests"],
     extras_require={
         "test": ["pytest"]
     },
