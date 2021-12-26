@@ -1,8 +1,7 @@
-import pandas as pd
-import requests as requests
-
+import requests
 from mpim_tools.startup import config
 from string import Template
+from mpim_tools.utils import load_person_by_id
 
 
 def send_mails(matches_df, people_df, debug=False):
@@ -12,7 +11,6 @@ def send_mails(matches_df, people_df, debug=False):
         person_a = load_person_by_id(person_a_id, people_df)
         if not person_a:
             continue
-
         match_ids = row['match_ids']
         match_ids = match_ids.replace(" ", "").strip()
         match_ids = match_ids.split(',')
@@ -28,7 +26,7 @@ def send_mails(matches_df, people_df, debug=False):
         mail_body = render_mail_body(person_a, matches)
         # send mail
         # print(mail)
-        send_mail(mail_body, "s.mueller1995@gmail.com", debug=debug)
+        send_mail(mail_body, "s.mueller1995@gmail.com", debug=debug) # mail should be replaced by person_a['mail']
 
 
 def render_mail_body(person, matches):
@@ -70,8 +68,7 @@ def render_mail_body(person, matches):
 
 
 def send_mail(mail_body, recipient, debug=True):
-    if debug:
-        recipient = "s.mueller1995@gmail.com"
+    if debug: recipient = "s.mueller1995@gmail.com"
     res = requests.post(f"https://api.mailgun.net/v3/{config['domain']}/messages",
                         auth=("api", config['apikey']),
                         data={"from": f"mailgun@{config['domain']}",
@@ -80,14 +77,7 @@ def send_mail(mail_body, recipient, debug=True):
                               "text": mail_body
                               }
                         )
-    print(res)
-
-
-def load_person_by_id(person_id, people_df):
-    person = people_df.loc[people_df['id'] == int(person_id)]
-
-    if len(person) != 1:
-        print(f'Could not find corresponding person {person_id} in data...')
-        return None
-
-    return person.to_dict('records')[0]
+    if res.status_code == 200:
+        print(f'Mail to {recipient} successfully sent!')
+    else:
+        print(f'There was a problem sending the email to {recipient}')
