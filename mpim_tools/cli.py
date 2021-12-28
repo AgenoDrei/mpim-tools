@@ -41,8 +41,9 @@ def notify(domain, apikey):
 @click.argument("matches_path")
 @click.argument("people_path")
 @click.option("-d", "--debug/--no-debug", help="Activate debug mode", default=False)
-def notify(matches_path, people_path, debug):
-    print(f"Processing matches from {matches_path}, debug mode {debug}")
+@click.option("-m", "--mode", help="Select FWB / Relationship / Friends mode", default="Relationship")
+def notify(matches_path, people_path, debug, mode):
+    print(f"Processing matches from {matches_path} for mode {mode}, debug status {debug}")
     matches_df = pd.read_excel(matches_path)
     people_df = pd.read_excel(people_path)
 

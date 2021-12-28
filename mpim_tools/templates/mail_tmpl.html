@@ -30,8 +30,7 @@
 <table role="presentation" style="width:100%;border-collapse:collapse;border:0;border-spacing:0;background:#ffffff;">
     <tr>
         <td align="center" style="padding:0;">
-            <table role="presentation"
-                   style="width:602px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
+            <table role="presentation" style="width:800px;border-collapse:collapse;border:1px solid #cccccc;border-spacing:0;text-align:left;">
                 <tr>
                     <td align="center" style="padding:40px 0 30px 0;background:#747474;">
                         <img src="https://drive.google.com/uc?export=download&id=14hOLXQR2D2PfrpRgsQ_3uAFMwdMMWIdq" alt="" width="300"
@@ -50,17 +49,17 @@
                                         Hello {{forename}}! <br><br>
                                         Thanks for participating in this round of Meet People in Maastricht. After
                                         carefully working through all the participants we are happy to present you
-                                        with the following {{number}} matches:<br></p>
+                                        with the following {{number}} matches:</p>
 
                                     {% for m in matches %}
-                                        <h3>Match Number {{loop.index}} </h3>
+                                        <h2 style="color:#DAA520">Match Number {{loop.index}} </h2>
                                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
-                                            Name: {{m['id']}} <br>
-                                            Age: {{m['How old are you?']}} <br>
-                                            Faculty: {{m['If you are a student, at which faculty are you studying?']}} <br>
-                                            Gender: {{m['What is your gender?']}} <br>
-                                            Sexual orientation: {{m['What is your sexual orientation?']}}<br>
+                                            {% for key, value in m.items() %}
+                                            <b>{{key}}</b> <br>
+                                            {{value}} <br> <br>
+                                            {% endfor %}
                                         </p>
+                                        <hr style="height: 1px">
                                     {% endfor %}
 
                                     <hr>

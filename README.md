@@ -39,9 +39,9 @@ To run the tests:
     pytest
 
 ## ToDo 
-* [ ] Add all infos from the google form to the generated mail 
+* [x] Add all infos from the google form to the generated mail 
 * [x] Get an actual domain for the emails
-* [ ] HTML email templates
+* [x] HTML email templates
 * [ ] Create matching algorithm
   * [ ] Based on categorical information
   * [ ] Based on unstructured free-text fields

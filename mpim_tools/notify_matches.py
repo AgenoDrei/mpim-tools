@@ -1,3 +1,4 @@
+import math
 import requests
 from mpim_tools.startup import config
 from string import Template
@@ -23,6 +24,8 @@ def send_mails(matches_df, people_df, debug=False):
             match = load_person_by_id(match_id, people_df)
             if not match:
                 continue
+            del match['By filling this form you give consent that your personal data (i.e. all answers given in this form as well as your contact details) will be used during the matching process and will be sent to your matches afterwards.']
+            match = {k: "-" if type(v) == float and math.isnan(v) else v for k, v in match.items()}
             matches.append(match)
 
         # construct mail
@@ -32,7 +35,7 @@ def send_mails(matches_df, people_df, debug=False):
         mail_template = env.from_string(mail_template)
         mail_body = mail_template.render(name=person_a_id, number=len(matches), matches=matches)
         # send mail
-        send_simple_mail(mail_body, "s.mueller1995@gmail.com", debug=debug) # mail should be replaced by person_a['mail']
+        send_simple_mail(mail_body, "s.mueller1995@gmail.com") # mail should be replaced by person_a['mail']
 
         # print(mail)
 
