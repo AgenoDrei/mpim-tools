@@ -27,11 +27,12 @@ setup(
     license="Apache License, Version 2.0",
     version=VERSION,
     packages=["mpim_tools"],
+    include_package_data=True,
     entry_points="""
         [console_scripts]
         mpim-tools=mpim_tools.cli:cli
     """,
-    install_requires=["click", "pandas", "openpyxl", "requests"],
+    install_requires=["click", "pandas", "openpyxl", "requests", "jinja2", "importlib_resources"],
     extras_require={
         "test": ["pytest"]
     },

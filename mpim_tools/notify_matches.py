@@ -2,6 +2,9 @@ import requests
 from mpim_tools.startup import config
 from string import Template
 from mpim_tools.utils import load_person_by_id
+from mpim_tools import templates
+import importlib.resources as pkg_resources
+from jinja2 import Environment
 
 
 def send_mails(matches_df, people_df, debug=False):
@@ -23,58 +26,25 @@ def send_mails(matches_df, people_df, debug=False):
             matches.append(match)
 
         # construct mail
-        mail_body = render_mail_body(person_a, matches)
+        #mail_body = render_mail_body(person_a, matches)
+        env = Environment()
+        mail_template = pkg_resources.read_text(templates, 'mail_tmpl.html')
+        mail_template = env.from_string(mail_template)
+        mail_body = mail_template.render(name=person_a_id, number=len(matches), matches=matches)
         # send mail
+        send_simple_mail(mail_body, "s.mueller1995@gmail.com", debug=debug) # mail should be replaced by person_a['mail']
+
         # print(mail)
-        send_mail(mail_body, "s.mueller1995@gmail.com", debug=debug) # mail should be replaced by person_a['mail']
 
 
-def render_mail_body(person, matches):
-    template_start = Template("Hello $forename!\n"
-                              "\n"
-                              "Thanks for participating in this round of Meet People in Maastricht. After carefully\n"
-                              "working through all of the participants we are happy to present you with the following\n"
-                              "$number matches:\n\n")
-    template_single_match = Template("\n"
-                                     "--- Match Number ${id}: ------------------------------------------------------\n"
-                                     "Name: $name\n"
-                                     "Age: $age\n"
-                                     "Faculty: $faculty\n"
-                                     "Gender: $gender\n"
-                                     "Sexual orientation: $orientation\n"
-                                     "")
-    template_end = Template("\n"
-                            "--------------------------------------------------------------------------------------\n"
-                            "We hope you are happy with the selection. Enjoying reaching out to your matches with the\n"
-                            "provided address. Remember to be respectful to each other and enjoy meeting all of these\n"
-                            "new people!\n"
-                            "\n"
-                            "Kind regards\n"
-                            "The Meet-People-In-Maastricht Team")
-
-    mail_string = template_start.substitute(forename=person['id'], number=len(matches))
-    for i, m in enumerate(matches):
-        mapping = {
-            'id': i + 1,
-            'name': m['id'],
-            'age': m['How old are you?'],
-            'faculty': m['If you are a student, at which faculty are you studying?'],
-            'gender': m['What is your gender?'],
-            'orientation': m['What is your sexual orientation?']
-        }
-        mail_string += template_single_match.substitute(mapping)
-    mail_string += template_end.substitute()
-    return mail_string
-
-
-def send_mail(mail_body, recipient, debug=True):
+def send_simple_mail(mail_body, recipient, debug=True):
     if debug: recipient = "s.mueller1995@gmail.com"
-    res = requests.post(f"https://api.mailgun.net/v3/{config['domain']}/messages",
+    res = requests.post(f"{config['base_url']}{config['domain']}/messages",
                         auth=("api", config['apikey']),
-                        data={"from": f"mailgun@{config['domain']}",
+                        data={"from": f"mail@{config['domain']}",
                               "to": [recipient],
                               "subject": "Your Meet-People-In-Maastricht matches",
-                              "text": mail_body
+                              "html": mail_body
                               }
                         )
     if res.status_code == 200:

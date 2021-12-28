@@ -32,7 +32,7 @@ def notify(domain, apikey):
     :param apikey: private api-key
     """
     print(f"Save configuration to {CACHE_DIR}")
-    config = {"base_url":  "https://api.mailgun.net/v3/", "domain": domain, "apikey": apikey}
+    config = {"base_url": "https://api.eu.mailgun.net/v3/", "domain": domain, "apikey": apikey}
     f = open(CACHE_DIR / "config.json", 'w')
     json.dump(config, f)
 
