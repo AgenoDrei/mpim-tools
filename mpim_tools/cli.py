@@ -47,7 +47,7 @@ def notify(matches_path, people_path, debug, mode):
     matches_df = pd.read_excel(matches_path)
     people_df = pd.read_excel(people_path)
 
-    send_mails(matches_df, people_df, debug=debug)
+    send_mails(matches_df, people_df, mode, debug=debug)
 
 
 import sys

@@ -8,7 +8,7 @@ import importlib.resources as pkg_resources
 from jinja2 import Environment
 
 
-def send_mails(matches_df, people_df, debug=False):
+def send_mails(matches_df, people_df, mode, debug=False):
     for i, row in matches_df.iterrows():
         print(f"Working on person with id {row['person_id']} now..")
         person_a_id = row['person_id']
@@ -25,7 +25,9 @@ def send_mails(matches_df, people_df, debug=False):
             if not match:
                 continue
             del match['By filling this form you give consent that your personal data (i.e. all answers given in this form as well as your contact details) will be used during the matching process and will be sent to your matches afterwards.']
-            match = {k: "-" if type(v) == float and math.isnan(v) else v for k, v in match.items()}
+            del match['id']
+
+            match = {k: v for k, v in match.items() if not (type(v) == float and math.isnan(v))}
             matches.append(match)
 
         # construct mail
@@ -33,20 +35,20 @@ def send_mails(matches_df, people_df, debug=False):
         env = Environment()
         mail_template = pkg_resources.read_text(templates, 'mail_tmpl.html')
         mail_template = env.from_string(mail_template)
-        mail_body = mail_template.render(name=person_a_id, number=len(matches), matches=matches)
+        mail_body = mail_template.render(forename=person_a['What is your name?'], number=len(matches), matches=matches, mode=mode)
         # send mail
-        send_simple_mail(mail_body, "s.mueller1995@gmail.com") # mail should be replaced by person_a['mail']
+        send_html_mail(mail_body, person_a['mail'], mode, debug=False) # mail should be replaced by person_a['mail']
 
         # print(mail)
 
 
-def send_simple_mail(mail_body, recipient, debug=True):
+def send_html_mail(mail_body, recipient, mode, debug=True):
     if debug: recipient = "s.mueller1995@gmail.com"
     res = requests.post(f"{config['base_url']}{config['domain']}/messages",
                         auth=("api", config['apikey']),
                         data={"from": f"mail@{config['domain']}",
                               "to": [recipient],
-                              "subject": "Your Meet-People-In-Maastricht matches",
+                              "subject": f"Your Meet-People-In-Maastricht matches - {mode}",
                               "html": mail_body
                               }
                         )

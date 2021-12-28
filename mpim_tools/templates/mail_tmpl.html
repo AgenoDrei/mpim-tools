@@ -49,10 +49,10 @@
                                         Hello {{forename}}! <br><br>
                                         Thanks for participating in this round of Meet People in Maastricht. After
                                         carefully working through all the participants we are happy to present you
-                                        with the following {{number}} matches:</p>
+                                        with the following {{number}} matches in the category <b>{{mode.lower()}}</b>:</p>
 
                                     {% for m in matches %}
-                                        <h2 style="color:#DAA520">Match Number {{loop.index}} </h2>
+                                        <h2 style="color:#DAA520">{{loop.index}}. {{m['What is your name?']}}'s answers to the form</h2>
                                         <p style="margin:0 0 12px 0;font-size:16px;line-height:24px;font-family:Arial,sans-serif;">
                                             {% for key, value in m.items() %}
                                             <b>{{key}}</b> <br>
