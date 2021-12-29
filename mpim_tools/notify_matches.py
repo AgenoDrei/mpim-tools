@@ -8,14 +8,20 @@ import importlib.resources as pkg_resources
 from jinja2 import Environment
 
 
+PERSON_ID = 'person_id'
+MATCH_IDS = 'match_ids'
+MATCH_ID = 'id'
+NAME_COL = 'What is your name?'
+
+
 def send_mails(matches_df, people_df, mode, debug=False):
     for i, row in matches_df.iterrows():
-        print(f"Working on person with id {row['person_id']} now..")
-        person_a_id = row['person_id']
+        print(f"Working on person with id {row[PERSON_ID]} now..")
+        person_a_id = row[PERSON_ID]
         person_a = load_person_by_id(person_a_id, people_df)
         if not person_a:
             continue
-        match_ids = row['match_ids']
+        match_ids = row[MATCH_IDS]
         match_ids = match_ids.replace(" ", "").strip()
         match_ids = match_ids.split(',')
 
@@ -24,9 +30,11 @@ def send_mails(matches_df, people_df, mode, debug=False):
             match = load_person_by_id(match_id, people_df)
             if not match:
                 continue
-            del match['By filling this form you give consent that your personal data (i.e. all answers given in this form as well as your contact details) will be used during the matching process and will be sent to your matches afterwards.']
-            del match['id']
-
+            try:
+                del match['By filling this form you give consent that your personal data (i.e. all answers given in this form as well as your contact details) will be used during the matching process and will be sent to your matches afterwards.']
+                del match[MATCH_ID]
+            except KeyError:
+                pass
             match = {k: v for k, v in match.items() if not (type(v) == float and math.isnan(v))}
             matches.append(match)
 
@@ -35,7 +43,7 @@ def send_mails(matches_df, people_df, mode, debug=False):
         env = Environment()
         mail_template = pkg_resources.read_text(templates, 'mail_tmpl.html')
         mail_template = env.from_string(mail_template)
-        mail_body = mail_template.render(forename=person_a['What is your name?'], number=len(matches), matches=matches, mode=mode)
+        mail_body = mail_template.render(forename=person_a[NAME_COL], number=len(matches), matches=matches, mode=mode)
         # send mail
         send_html_mail(mail_body, person_a['mail'], mode, debug=False) # mail should be replaced by person_a['mail']
 

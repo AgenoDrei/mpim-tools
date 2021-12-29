@@ -1,26 +1,16 @@
 import click
-import os
+import sys
 import pandas as pd
 import json
-
 from _socket import herror
-
 from mpim_tools.notify_matches import send_mails
-from mpim_tools.startup import CACHE_DIR
+from mpim_tools.startup import CACHE_DIR, MAILGUN_BASE
 
 
 @click.group()
 @click.version_option()
 def cli():
     "Meet people in Maastricht - tools to automate matching workflow"
-
-
-@cli.command(name="command")
-@click.argument("example")
-@click.option("-o", "--option", help="An example option")
-def first_command(example, option):
-    "Command description goes here"
-    click.echo(f"Here is some output: {example}/{option}")
 
 
 @cli.command(name="setup")
@@ -32,7 +22,7 @@ def notify(domain, apikey):
     :param apikey: private api-key
     """
     print(f"Save configuration to {CACHE_DIR}")
-    config = {"base_url": "https://api.eu.mailgun.net/v3/", "domain": domain, "apikey": apikey}
+    config = {"base_url": MAILGUN_BASE, "domain": domain, "apikey": apikey}
     f = open(CACHE_DIR / "config.json", 'w')
     json.dump(config, f)
 
@@ -50,7 +40,6 @@ def notify(matches_path, people_path, debug, mode):
     send_mails(matches_df, people_df, mode, debug=debug)
 
 
-import sys
 if __name__ == '__main__':
     cli(sys.argv[1:])
 

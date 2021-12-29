@@ -2,6 +2,7 @@ import json
 import os.path
 from pathlib import Path
 
+MAILGUN_BASE = "https://api.eu.mailgun.net/v3/"
 HOME_DIR = Path.home()
 CACHE_DIR = HOME_DIR / '.mpim_cache'
 CONFIG_FILE = CACHE_DIR / 'config.json'
