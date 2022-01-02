@@ -6,12 +6,7 @@ from mpim_tools.utils import load_person_by_id
 from mpim_tools import templates
 import importlib.resources as pkg_resources
 from jinja2 import Environment
-
-
-PERSON_ID = 'person_id'
-MATCH_IDS = 'match_ids'
-MATCH_ID = 'id'
-NAME_COL = 'What is your name?'
+from mpim_tools.constants import *
 
 
 def send_mails(matches_df, people_df, mode, debug=False):

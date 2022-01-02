@@ -2,25 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 from tqdm import tqdm
-
-GENDER_COL = "What is your gender?"
-ORIENTATION_COL = "What is your sexual orientation?"
-AGE_COL = "How old are you?"
-FACULTY_COL = "If you are a student, at which faculty are you studying?"
-HAPPY_COL = "On a scale from 1 to 10, how happy are you in your life?"
-HOBBY_COL = "What are your hobbies?"
-TRAIT_COL = "How would you describe yourself?"
-LOVE_LANGUAGE_COL = "What's your love language?"
-BELIEF_COL = "Do you believe in God?"
-PRIO_COL = "Money or love?"
-
-HETERO = "Heterosexual"
-HOMO = "Homosexual"  # ToDo: unify lesbian, gay, etc. to homosexual
-BI = "Bisexual"
-
-VALUE_IMPORTANCE_HIGH = 10
-VALUE_IMPORTANCE_MED = 5
-VALUE_IMPORTANCE_LOW = 1
+from mpim_tools.constants import *
 
 
 def create_matches(df, output_path, maximum_matches):
