@@ -1,8 +1,12 @@
+import os.path
+
 import click
 import sys
 import pandas as pd
 import json
 from _socket import herror
+
+from mpim_tools.create_matches import create_matches
 from mpim_tools.notify_matches import send_mails
 from mpim_tools.startup import CACHE_DIR, MAILGUN_BASE
 
@@ -25,6 +29,20 @@ def notify(domain, apikey):
     config = {"base_url": MAILGUN_BASE, "domain": domain, "apikey": apikey}
     f = open(CACHE_DIR / "config.json", 'w')
     json.dump(config, f)
+
+
+@cli.command(name="match")
+@click.argument("people_path")
+@click.argument("output_path")
+@click.option("-m", "--maximum_matches", help="Maximum number of possible matches per person", default=10)
+def match(people_path, output_path, maximum_matches):
+    print(f"Process people and create max. {maximum_matches} possible matches...")
+    people_df = pd.read_excel(people_path)
+    if os.path.exists(output_path):
+        click.echo("Output path already exists")
+        return -1
+    os.mkdir(output_path)
+    create_matches(people_df, output_path, maximum_matches)
 
 
 @cli.command(name="notify")

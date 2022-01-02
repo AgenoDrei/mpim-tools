@@ -32,7 +32,7 @@ setup(
         [console_scripts]
         mpim-tools=mpim_tools.cli:cli
     """,
-    install_requires=["click", "pandas", "openpyxl", "requests", "jinja2", "importlib_resources"],
+    install_requires=["click", "pandas", "openpyxl", "requests", "jinja2", "importlib_resources", "tqdm", "numpy"],
     extras_require={
         "test": ["pytest"]
     },

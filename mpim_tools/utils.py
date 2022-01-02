@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 def load_person_by_id(person_id, df):
     person = df.loc[df['id'] == int(person_id)]
 
