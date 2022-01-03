@@ -47,3 +47,4 @@ To run the tests:
 * [ ] Create matching algorithm
   * [ ] Based on categorical information
   * [ ] Based on unstructured free-text fields
+  * [ ] Command that generates a match table based on the remaining curated matches

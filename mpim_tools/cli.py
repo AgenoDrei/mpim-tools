@@ -6,6 +6,7 @@ import pandas as pd
 import json
 from _socket import herror
 
+from mpim_tools.constants import PERSON_ID, MATCH_IDS, MATCH_ID
 from mpim_tools.create_matches import create_matches
 from mpim_tools.notify_matches import send_mails
 from mpim_tools.startup import CACHE_DIR, MAILGUN_BASE
@@ -43,6 +44,22 @@ def match(people_path, output_path, maximum_matches):
         return -1
     os.mkdir(output_path)
     create_matches(people_df, output_path, maximum_matches)
+
+
+@cli.command(name="confirm")
+@click.argument("matches_path")
+def confirm(matches_path):
+    print(f"Confirm matches in path {matches_path}...")
+    if not os.path.exists(matches_path):
+        click.echo("Path does not exist")
+        return -1
+    matches_df = pd.DataFrame(columns=[PERSON_ID, MATCH_IDS])
+    files = os.listdir(matches_path)
+    for f in files:
+        person_id = os.path.splitext(f)[0]
+        df = pd.read_csv(os.path.join(matches_path, f), sep=';')
+        matches_df = matches_df.append({PERSON_ID: person_id, MATCH_IDS: df[MATCH_ID].tolist()}, ignore_index=True)
+    matches_df.to_excel(os.path.join(matches_path, "matches.xlsx"), index=False)
 
 
 @cli.command(name="notify")

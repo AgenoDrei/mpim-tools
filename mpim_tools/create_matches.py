@@ -43,8 +43,9 @@ def calc_mcq_fittness(answer_a, answer_b):
 
 
 def calc_match_fitness(person_a, person_b):
-    age_comp = VALUE_IMPORTANCE_HIGH - np.absolute(int(person_a[AGE_COL][:2]) - int(person_b[AGE_COL][:2]))
+    age_comp = VALUE_IMPORTANCE_MED - np.absolute(int(person_a[AGE_COL][:2]) - int(person_b[AGE_COL][:2]))
     happy_comp = VALUE_IMPORTANCE_MED - np.absolute(person_a[HAPPY_COL] - person_b[HAPPY_COL])
+    trust_comp = VALUE_IMPORTANCE_MED - np.absolute(person_a[TRUST_COL] - person_b[TRUST_COL])
     faculty_comp = VALUE_IMPORTANCE_HIGH if person_a[FACULTY_COL] == person_b[FACULTY_COL] else 0
     nationality_comp = VALUE_IMPORTANCE_LOW if person_a[FACULTY_COL] == person_b[FACULTY_COL] else 0
     hobby_comp = calc_mcq_fittness(person_a[HOBBY_COL], person_b[HOBBY_COL])
@@ -52,11 +53,14 @@ def calc_match_fitness(person_a, person_b):
     ll_comp = calc_mcq_fittness(person_a[LOVE_LANGUAGE_COL], person_b[LOVE_LANGUAGE_COL])
     belief_comp = VALUE_IMPORTANCE_HIGH if person_a[BELIEF_COL] == person_b[BELIEF_COL] else 0
     prio_comp = VALUE_IMPORTANCE_MED if person_a[PRIO_COL] == person_b[PRIO_COL] else 0
-
-    # ToDo: marriage, kids, showering, trust, therapy, ideal date
+    marriage_comp = VALUE_IMPORTANCE_MED if person_a[MARRIAGE_COL] == person_b[MARRIAGE_COL] else 0
+    children_comp = VALUE_IMPORTANCE_MED if person_a[CHILDREN_COL] == person_b[CHILDREN_COL] else 0
+    shower_comp = VALUE_IMPORTANCE_LOW if person_a[SHOWER_COL] == person_b[SHOWER_COL] else 0
 
     happy_comp = int(happy_comp) if not np.isnan(happy_comp) else 0
+    trust_comp = int(trust_comp) if not np.isnan(trust_comp) else 0
     age_comp = int(age_comp) if not np.isnan(age_comp) else 0
 
-    fitness = age_comp + faculty_comp + nationality_comp + happy_comp + hobby_comp + trait_comp + ll_comp + belief_comp + prio_comp
+    fitness = age_comp + faculty_comp + nationality_comp + happy_comp + hobby_comp + trait_comp + ll_comp + \
+              belief_comp + prio_comp + marriage_comp + children_comp + shower_comp + trust_comp
     return fitness
