@@ -37,6 +37,9 @@ def notify(domain, apikey):
 @click.argument("output_path")
 @click.option("-m", "--maximum_matches", help="Maximum number of possible matches per person", default=10)
 def match(people_path, output_path, maximum_matches):
+    """
+    Propose matches in the folder OUTPUT_PATH for every participant defined in PEOPLE_PATH
+    """
     print(f"Process people and create max. {maximum_matches} possible matches...")
     people_df = pd.read_excel(people_path)
     if os.path.exists(output_path):
@@ -49,6 +52,9 @@ def match(people_path, output_path, maximum_matches):
 @cli.command(name="confirm")
 @click.argument("matches_path")
 def confirm(matches_path):
+    """
+    Create matches.xlsx from curated match folder in MATCHES_PATH for each participant
+    """
     print(f"Confirm matches in path {matches_path}...")
     if not os.path.exists(matches_path):
         click.echo("Path does not exist")
@@ -68,6 +74,10 @@ def confirm(matches_path):
 @click.option("-d", "--debug/--no-debug", help="Activate debug mode", default=False)
 @click.option("-m", "--mode", help="Select FWB / Relationship / Friends mode", default="Relationship")
 def notify(matches_path, people_path, debug, mode):
+    """
+    The matches in MATCHES PATH (previously calculated and curated matches by cli match command) is used to send
+    mails to the participants defined in PEOPLE_PATH.
+    """
     print(f"Processing matches from {matches_path} for mode {mode}, debug status {debug}")
     matches_df = pd.read_excel(matches_path)
     people_df = pd.read_excel(people_path)

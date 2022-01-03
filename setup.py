@@ -1,7 +1,7 @@
 from setuptools import setup
 import os
 
-VERSION = "0.1"
+VERSION = "0.5"
 
 
 def get_long_description():
@@ -32,7 +32,7 @@ setup(
         [console_scripts]
         mpim-tools=mpim_tools.cli:cli
     """,
-    install_requires=["click", "pandas", "openpyxl", "requests", "jinja2", "importlib_resources", "tqdm", "numpy"],
+    install_requires=["click", "pandas", "openpyxl", "requests", "jinja2", "importlib_resources", "tqdm", "numpy", "toml"],
     extras_require={
         "test": ["pytest"]
     },

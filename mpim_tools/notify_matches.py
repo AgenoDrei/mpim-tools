@@ -34,7 +34,6 @@ def send_mails(matches_df, people_df, mode, debug=False):
             matches.append(match)
 
         # construct mail
-        #mail_body = render_mail_body(person_a, matches)
         env = Environment()
         mail_template = pkg_resources.read_text(templates, 'mail_tmpl.html')
         mail_template = env.from_string(mail_template)
@@ -43,6 +42,7 @@ def send_mails(matches_df, people_df, mode, debug=False):
         send_html_mail(mail_body, person_a['mail'], mode, debug=False) # mail should be replaced by person_a['mail']
 
         # print(mail)
+        # mail_body = render_mail_body(person_a, matches)
 
 
 def send_html_mail(mail_body, recipient, mode, debug=True):

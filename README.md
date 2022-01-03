@@ -13,10 +13,17 @@ Setup the tool with the necessary config using this command:
     
     mpim-tools setup <mailgun_domain> <api_key>
 
+Create match suggestions for manual review for each participant, output folder will be created
+
+    mpim-tools match <examples_relationships.xlsx> <output_path>
+
+After manual curation, this command creates a matching table automatically
+
+    mpim-tools confirm <prv_output_path>
+
 Notify all participants provided you have a file with all the personal information and the previously generated matches:
 
-    mpim-tools notify ~\MPIM-tools\data\examples_matches.xlsx ~\MPIM-tools\data\example_data_relationships.xlsx 
-
+    mpim-tools notify <matches.xlsx> <examples_relationships.xlsx> 
 
 ## Development
 
@@ -39,12 +46,12 @@ To run the tests:
     pytest
 
 ## ToDo 
-* [ ] Mail automation
+* [x] Mail automation
   * [x] Add all infos from the google form to the generated mail 
   * [x] Get an actual domain for the emails
   * [x] HTML email templates
-  * [ ] Create user-friendly configuration for mail/id column names
 * [ ] Create matching algorithm
-  * [ ] Based on categorical information
+  * [x] Based on categorical information
   * [ ] Based on unstructured free-text fields
-  * [ ] Command that generates a match table based on the remaining curated matches
+  * [x] Command that generates a match table based on the remaining curated matches
+* [ ] Create user-friendly configuration for mail/id column names

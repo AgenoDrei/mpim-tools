@@ -32,7 +32,7 @@ def create_matches(df, output_path, maximum_matches):
         matches_sorted_df.head(maximum_matches).to_csv(os.path.join(output_path, f'{i}.csv'), index=False, sep=';')
 
 
-def calc_mcq_fittness(answer_a, answer_b):
+def calc_mcq_fitness(answer_a, answer_b):
     answer_a, answer_b = answer_a.split(", "), answer_b.split(", ")
     count = 0
     for answer in answer_a:
@@ -48,9 +48,9 @@ def calc_match_fitness(person_a, person_b):
     trust_comp = VALUE_IMPORTANCE_MED - np.absolute(person_a[TRUST_COL] - person_b[TRUST_COL])
     faculty_comp = VALUE_IMPORTANCE_HIGH if person_a[FACULTY_COL] == person_b[FACULTY_COL] else 0
     nationality_comp = VALUE_IMPORTANCE_LOW if person_a[FACULTY_COL] == person_b[FACULTY_COL] else 0
-    hobby_comp = calc_mcq_fittness(person_a[HOBBY_COL], person_b[HOBBY_COL])
-    trait_comp = calc_mcq_fittness(person_a[TRAIT_COL], person_b[TRAIT_COL])
-    ll_comp = calc_mcq_fittness(person_a[LOVE_LANGUAGE_COL], person_b[LOVE_LANGUAGE_COL])
+    hobby_comp = calc_mcq_fitness(person_a[HOBBY_COL], person_b[HOBBY_COL])
+    trait_comp = calc_mcq_fitness(person_a[TRAIT_COL], person_b[TRAIT_COL])
+    ll_comp = calc_mcq_fitness(person_a[LOVE_LANGUAGE_COL], person_b[LOVE_LANGUAGE_COL])
     belief_comp = VALUE_IMPORTANCE_HIGH if person_a[BELIEF_COL] == person_b[BELIEF_COL] else 0
     prio_comp = VALUE_IMPORTANCE_MED if person_a[PRIO_COL] == person_b[PRIO_COL] else 0
     marriage_comp = VALUE_IMPORTANCE_MED if person_a[MARRIAGE_COL] == person_b[MARRIAGE_COL] else 0
