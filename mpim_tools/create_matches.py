@@ -29,7 +29,7 @@ def create_matches(df, output_path, maximum_matches):
             matches_df = matches_df.append(match_row, ignore_index=True)
 
         matches_sorted_df = matches_df.sort_values(by="fitness", ascending=False)
-        matches_sorted_df.head(maximum_matches).to_csv(os.path.join(output_path, f'{i}.csv'), index=False, sep=';')
+        matches_sorted_df.head(maximum_matches).to_csv(os.path.join(output_path, f'{row[FORM_ID]}.csv'), index=False, sep=';')
 
 
 def calc_mcq_fitness(answer_a, answer_b):

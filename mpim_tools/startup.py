@@ -20,4 +20,8 @@ if os.path.exists(CONFIG_FILE):
 if os.path.exists(os.path.join(ROOT_PATH, "names.toml")):
     names = toml.load(os.path.join(ROOT_PATH, "names.toml"))
     print('Overwriting default column names...')
+    for k, v in names.items():
+        if type(k) != str:
+            continue
+        exec(k + f" = {v}")
 

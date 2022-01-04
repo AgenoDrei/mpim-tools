@@ -6,7 +6,7 @@ import pandas as pd
 import json
 from _socket import herror
 
-from mpim_tools.constants import PERSON_ID, MATCH_IDS, MATCH_ID
+from mpim_tools.constants import PERSON_ID, MATCH_IDS, FORM_ID
 from mpim_tools.create_matches import create_matches
 from mpim_tools.notify_matches import send_mails
 from mpim_tools.startup import CACHE_DIR, MAILGUN_BASE
@@ -64,7 +64,7 @@ def confirm(matches_path):
     for f in files:
         person_id = os.path.splitext(f)[0]
         df = pd.read_csv(os.path.join(matches_path, f), sep=';')
-        matches_df = matches_df.append({PERSON_ID: person_id, MATCH_IDS: df[MATCH_ID].tolist()}, ignore_index=True)
+        matches_df = matches_df.append({PERSON_ID: person_id, MATCH_IDS: df[FORM_ID].tolist()}, ignore_index=True)
     matches_df.to_excel(os.path.join(matches_path, "matches.xlsx"), index=False)
 
 

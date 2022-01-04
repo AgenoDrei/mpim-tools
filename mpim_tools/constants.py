@@ -27,5 +27,6 @@ VALUE_IMPORTANCE_LOW = 1
 # Constants send notifications
 PERSON_ID = 'person_id'
 MATCH_IDS = 'match_ids'
-MATCH_ID = 'id'
+FORM_ID = 'id'
 NAME_COL = 'What is your name?'
+MAIL_COL = 'mail'

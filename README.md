@@ -54,4 +54,4 @@ To run the tests:
   * [x] Based on categorical information
   * [ ] Based on unstructured free-text fields
   * [x] Command that generates a match table based on the remaining curated matches
-* [ ] Create user-friendly configuration for mail/id column names
+* [x] Create user-friendly configuration for mail/id column names

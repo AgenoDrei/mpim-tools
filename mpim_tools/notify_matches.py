@@ -27,7 +27,7 @@ def send_mails(matches_df, people_df, mode, debug=False):
                 continue
             try:
                 del match['By filling this form you give consent that your personal data (i.e. all answers given in this form as well as your contact details) will be used during the matching process and will be sent to your matches afterwards.']
-                del match[MATCH_ID]
+                del match[FORM_ID]
             except KeyError:
                 pass
             match = {k: v for k, v in match.items() if not (type(v) == float and math.isnan(v))}
@@ -39,7 +39,7 @@ def send_mails(matches_df, people_df, mode, debug=False):
         mail_template = env.from_string(mail_template)
         mail_body = mail_template.render(forename=person_a[NAME_COL], number=len(matches), matches=matches, mode=mode)
         # send mail
-        send_html_mail(mail_body, person_a['mail'], mode, debug=False) # mail should be replaced by person_a['mail']
+        send_html_mail(mail_body, person_a[MAIL_COL], mode, debug=False) # mail should be replaced by person_a['mail']
 
         # print(mail)
         # mail_body = render_mail_body(person_a, matches)
