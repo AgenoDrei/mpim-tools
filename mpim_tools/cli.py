@@ -1,15 +1,11 @@
 import os.path
-
 import click
 import sys
 import pandas as pd
 import json
-from _socket import herror
-
-from mpim_tools.constants import PERSON_ID, MATCH_IDS, FORM_ID
 from mpim_tools.create_matches import create_matches
 from mpim_tools.notify_matches import send_mails
-from mpim_tools.startup import CACHE_DIR, MAILGUN_BASE
+from mpim_tools.startup import CACHE_DIR, MAILGUN_BASE, names
 
 
 @click.group()
@@ -42,10 +38,10 @@ def match(people_path, output_path, maximum_matches):
     """
     print(f"Process people and create max. {maximum_matches} possible matches...")
     people_df = pd.read_excel(people_path)
-    if os.path.exists(output_path):
+    if os.path.exists(output_path) and len(os.listdir(output_path)) != 0:
         click.echo("Output path already exists")
         return -1
-    os.mkdir(output_path)
+    if not os.path.exists(output_path): os.mkdir(output_path)
     create_matches(people_df, output_path, maximum_matches)
 
 
@@ -59,12 +55,15 @@ def confirm(matches_path):
     if not os.path.exists(matches_path):
         click.echo("Path does not exist")
         return -1
-    matches_df = pd.DataFrame(columns=[PERSON_ID, MATCH_IDS])
+    matches_df = pd.DataFrame(columns=[names['notification']['PERSON_ID'], names['notification']['MATCH_IDS']])
     files = os.listdir(matches_path)
     for f in files:
         person_id = os.path.splitext(f)[0]
         df = pd.read_csv(os.path.join(matches_path, f), sep=';')
-        matches_df = matches_df.append({PERSON_ID: person_id, MATCH_IDS: df[FORM_ID].tolist()}, ignore_index=True)
+        matches_df = matches_df.append({
+            names['notification']['PERSON_ID']: person_id,
+            names['notification']['MATCH_IDS']: df[names['notification']['FORM_ID']].tolist()
+        }, ignore_index=True)
     matches_df.to_excel(os.path.join(matches_path, "matches.xlsx"), index=False)
 
 

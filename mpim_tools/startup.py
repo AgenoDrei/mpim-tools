@@ -17,11 +17,7 @@ if os.path.exists(CONFIG_FILE):
     f = open(CONFIG_FILE)
     config = json.load(f)
 
-if os.path.exists(os.path.join(ROOT_PATH, "names.toml")):
-    names = toml.load(os.path.join(ROOT_PATH, "names.toml"))
-    print('Overwriting default column names...')
-    for k, v in names.items():
-        if type(k) != str:
-            continue
-        exec(k + f" = {v}")
-
+if not os.path.exists(os.path.join(ROOT_PATH, "names.toml")):
+    raise FileNotFoundError("Could not find name definitions")
+names = toml.load(os.path.join(ROOT_PATH, "names.toml"))
+# print(names)
