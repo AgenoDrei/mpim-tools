@@ -24,6 +24,7 @@ TRUST_COL = "On a scale from 1 to 10, how easily do you trust (new) people? "
 HETERO = "Heterosexual"
 HOMO = "Homosexual"  # ToDo: unify lesbian, gay, etc. to homosexual
 BI = "Bisexual"
+DEF_HOMO = ["Lesbian", "Gay"]
 
 
 # Constants send notifications

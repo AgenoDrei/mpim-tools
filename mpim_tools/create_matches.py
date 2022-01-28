@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from mpim_tools.startup import names as n
+from mpim_tools.utils import cosine_similarity_words
 
 
 def create_matches(df, output_path, maximum_matches):
@@ -10,6 +11,8 @@ def create_matches(df, output_path, maximum_matches):
         matches_df = pd.DataFrame(columns=df.columns)
         gender = row[n['match']['GENDER_COL']]
         orientation = row[n['match']['ORIENTATION_COL']]
+        if orientation in n['match']['DEF_HOMO']:
+            orientation = n['match']['HOMO']
         matches_df['fitness'] = -1
 
         for j, match_row in df.iterrows():
@@ -34,11 +37,9 @@ def create_matches(df, output_path, maximum_matches):
 
 def calc_mcq_fitness(answer_a, answer_b):
     answer_a, answer_b = answer_a.split(", "), answer_b.split(", ")
-    count = 0
-    for answer in answer_a:
-        count += answer_b.count(answer)
+    cos_sim = cosine_similarity_words(answer_a, answer_b)
 
-    count = count / len(answer_a) * n['VALUE_IMPORTANCE_HIGH']
+    count = cos_sim * n['VALUE_IMPORTANCE_HIGH']
     return int(np.round(count))
 
 
