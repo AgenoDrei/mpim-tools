@@ -32,7 +32,8 @@ def notify(domain, apikey):
 @click.argument("people_path")
 @click.argument("output_path")
 @click.option("-m", "--maximum_matches", help="Maximum number of possible matches per person", default=10)
-def match(people_path, output_path, maximum_matches):
+@click.option("-m", "--mode", help="Select FWB / Relationship / Friends mode", default="Relationship")
+def match(people_path, output_path, maximum_matches, mode):
     """
     Propose matches in the folder OUTPUT_PATH for every participant defined in PEOPLE_PATH
     """
@@ -42,7 +43,7 @@ def match(people_path, output_path, maximum_matches):
         click.echo("Output path already exists")
         return -1
     if not os.path.exists(output_path): os.mkdir(output_path)
-    create_matches(people_df, output_path, maximum_matches)
+    create_matches(people_df, output_path, maximum_matches, mode=mode)
 
 
 @cli.command(name="confirm")

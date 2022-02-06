@@ -6,27 +6,41 @@ from mpim_tools.startup import names as n
 from mpim_tools.utils import cosine_similarity_words
 
 
-def create_matches(df, output_path, maximum_matches):
+cm = n['match']
+
+
+def create_matches(df, output_path, maximum_matches, mode='Relationship'):
     for i, row in tqdm(df.iterrows(), total=len(df)):
         matches_df = pd.DataFrame(columns=df.columns)
-        gender = row[n['match']['GENDER_COL']]
-        orientation = row[n['match']['ORIENTATION_COL']]
-        if orientation in n['match']['DEF_HOMO']:
-            orientation = n['match']['HOMO']
         matches_df['fitness'] = -1
+        gender = row[cm['GENDER_COL']]
+
+        orientation = None
+        if mode == 'Relationship' or mode == 'FWB':
+            orientation = row[cm['ORIENTATION_COL']]
+            if orientation in cm['DEF_HOMO']:
+                orientation = cm['HOMO']
+            if orientation == cm['NOT_KNOWN']:
+                continue
 
         for j, match_row in df.iterrows():
-            if j == i:
+            match_gender = match_row[cm['GENDER_COL']]
+            if row[n["notification"]["FORM_ID"]] == match_row[n["notification"]["FORM_ID"]]:
                 continue
-            if gender == match_row[n['match']['GENDER_COL']] and orientation == n['match']['HETERO']:
-                continue
-            if gender != match_row[n['match']['GENDER_COL']] and orientation == n['match']['HOMO']:
-                continue
-            if orientation == n['match']['BI'] and match_row[n['match']['GENDER_COL']] == gender and match_row[n['match']['ORIENTATION_COL']] == n['match']['HETERO']:
-                continue
-            if orientation == n['match']['BI'] and match_row[n['match']['GENDER_COL']] != gender and match_row[n['match']['ORIENTATION_COL']] == n['match']['HOMO']:
-                continue
-            match_fitness = calc_match_fitness(row, match_row)
+            if mode == 'Relationship' or mode == 'FWB':
+                match_orientation = match_row[cm['ORIENTATION_COL']]
+                if gender == match_gender and (match_orientation == cm['HETERO'] or orientation == cm['HETERO']):
+                    continue
+                if gender != match_gender and (match_orientation == cm['HOMO'] or orientation == cm['HOMO']):
+                    continue
+                if orientation == cm['BI'] and match_gender == gender and match_orientation == cm['HETERO']:
+                    continue
+                if orientation == cm['BI'] and match_gender != gender and match_orientation == cm['HOMO']:
+                    continue
+                if match_orientation == cm['NOT_KNOWN']:
+                    continue
+
+            match_fitness = calc_match_fitness(row, match_row, mode)
             # match_row_dict = match_row.to_dict()
             match_row['fitness'] = match_fitness
             matches_df = matches_df.append(match_row, ignore_index=True)
@@ -43,25 +57,32 @@ def calc_mcq_fitness(answer_a, answer_b):
     return int(np.round(count))
 
 
-def calc_match_fitness(person_a, person_b):
-    age_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(int(person_a[n['match']['AGE_COL']][:2]) - int(person_b[n['match']['AGE_COL']][:2]))
-    happy_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(person_a[n['match']['HAPPY_COL']] - person_b[n['match']['HAPPY_COL']])
-    trust_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(person_a[n['match']['TRUST_COL']] - person_b[n['match']['TRUST_COL']])
-    faculty_comp = n['VALUE_IMPORTANCE_HIGH'] if person_a[n['match']['FACULTY_COL']] == person_b[n['match']['FACULTY_COL']] else 0
-    # nationality_comp = n['VALUE_IMPORTANCE_LOW'] if person_a[n['match']['FACULTY_COL']] == person_b[n['match']['FACULTY_COL']] else 0
-    hobby_comp = calc_mcq_fitness(person_a[n['match']['HOBBY_COL']], person_b[n['match']['HOBBY_COL']])
-    trait_comp = calc_mcq_fitness(person_a[n['match']['TRAIT_COL']], person_b[n['match']['TRAIT_COL']])
-    ll_comp = calc_mcq_fitness(person_a[n['match']['LOVE_LANGUAGE_COL']], person_b[n['match']['LOVE_LANGUAGE_COL']])
-    belief_comp = n['VALUE_IMPORTANCE_HIGH'] if person_a[n['match']['BELIEF_COL']] == person_b[n['match']['BELIEF_COL']] else 0
-    prio_comp = n['VALUE_IMPORTANCE_MED'] if person_a[n['match']['PRIO_COL']] == person_b[n['match']['PRIO_COL']] else 0
-    marriage_comp = n['VALUE_IMPORTANCE_MED'] if person_a[n['match']['MARRIAGE_COL']] == person_b[n['match']['MARRIAGE_COL']] else 0
-    children_comp = n['VALUE_IMPORTANCE_MED'] if person_a[n['match']['CHILDREN_COL']] == person_b[n['match']['CHILDREN_COL']] else 0
-    shower_comp = n['VALUE_IMPORTANCE_LOW'] if person_a[n['match']['SHOWER_COL']] == person_b[n['match']['SHOWER_COL']] else 0
+def calc_match_fitness(person_a, person_b, mode):
+    fitness = 0
 
-    happy_comp = int(happy_comp) if not np.isnan(happy_comp) else 0
-    trust_comp = int(trust_comp) if not np.isnan(trust_comp) else 0
+    # Ranged values
+    age_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(int(person_a[cm['range']['AGE_COL']][:2]) - int(person_b[cm['range']['AGE_COL']][:2]))
     age_comp = int(age_comp) if not np.isnan(age_comp) else 0
+    fitness += age_comp
+    if mode == 'Relationship' or mode == 'FWB':
+        trust_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(person_a[cm['range']['TRUST_COL']] - person_b[cm['range']['TRUST_COL']])
+        trust_comp = int(trust_comp) if not np.isnan(trust_comp) else 0
+        fitness += trust_comp
 
-    fitness = age_comp + faculty_comp + happy_comp + hobby_comp + trait_comp + ll_comp + \
-              belief_comp + prio_comp + marriage_comp + children_comp + shower_comp + trust_comp
+    # MCQ categories
+    for k, v in cm['mcq'].items():
+        if person_a.get(v) == None:
+            continue
+        fitness += calc_mcq_fitness(person_a[v], person_b[v])
+
+    # Simple questions
+    for k, v in cm['simple'].items():
+        if person_a.get(v) == None:
+            continue
+        fitness += n['VALUE_IMPORTANCE_MED'] if person_a[v] == person_b[v] else 0
+
+
+    # faculty_comp = n['VALUE_IMPORTANCE_HIGH'] if person_a[n['match']['FACULTY_COL']] == person_b[n['match']['FACULTY_COL']] else 0
+    # hobby_comp = calc_mcq_fitness(person_a[n['match']['HOBBY_COL']], person_b[n['match']['HOBBY_COL']])
+    # fitness = age_comp + faculty_comp + hobby_comp + trait_comp + ll_comp + belief_comp + prio_comp + marriage_comp + children_comp + trust_comp
     return fitness

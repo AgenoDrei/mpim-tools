@@ -22,4 +22,5 @@ def cosine_similarity_words(words1, words2):
     dotprod = sum(c1.get(k, 0) * c2.get(k, 0) for k in terms)
     magA = math.sqrt(sum(c1.get(k, 0)**2 for k in terms))
     magB = math.sqrt(sum(c2.get(k, 0)**2 for k in terms))
-    return dotprod / (magA * magB)
+    res = dotprod / (magA * magB)
+    return res
