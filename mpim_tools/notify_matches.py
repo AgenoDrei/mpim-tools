@@ -20,6 +20,7 @@ def send_mails(matches_df, people_df, mode, debug=False):
             continue
         match_ids = row[cols['MATCH_IDS']]
         match_ids = match_ids.replace(" ", "").strip()
+        match_ids = match_ids.replace("[", "").replace("]", "")
         match_ids = match_ids.split(',')
 
         matches = []
@@ -28,8 +29,10 @@ def send_mails(matches_df, people_df, mode, debug=False):
             if not match:
                 continue
             try:
-                del match['By filling this form you give consent that your personal data (i.e. all answers given in this form as well as your contact details) will be used during the matching process and will be sent to your matches afterwards.']
                 del match[cols['FORM_ID']]
+                del match[cols['PRIVACY_COL']]
+                del match[cols['DATETIME_COL']]
+                del match['Timestamp']
             except KeyError:
                 pass
             match = {k: v for k, v in match.items() if not (type(v) == float and math.isnan(v))}
