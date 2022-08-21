@@ -67,7 +67,9 @@ def calc_match_fitness(person_a, person_b, mode):
     if mode == 'Relationship' or mode == 'FWB':
         trust_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(person_a[cm['range']['TRUST_COL']] - person_b[cm['range']['TRUST_COL']])
         trust_comp = int(trust_comp) if not np.isnan(trust_comp) else 0
-        fitness += trust_comp
+        weight_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(person_a[cm['range']['WEIGHT_COL']] - person_b[cm['range']['WEIGHT_COL']])
+        weight_comp = int(weight_comp) if not np.isnan(weight_comp) else 0
+        fitness += weight_comp
 
     # MCQ categories
     for k, v in cm['mcq'].items():

@@ -31,8 +31,8 @@ def notify(domain, apikey):
 @cli.command(name="match")
 @click.argument("people_path")
 @click.argument("output_path")
-@click.option("-m", "--maximum_matches", help="Maximum number of possible matches per person", default=10)
-@click.option("-m", "--mode", help="Select FWB / Relationship / Friends mode", default="Relationship")
+@click.option("-n", "--maximum_matches", help="Maximum number of possible matches per person", default=10)
+@click.option("-m", "--mode", help="Select FWB / Relationship / Friendship mode", default="Relationship")
 def match(people_path, output_path, maximum_matches, mode):
     """
     Propose matches in the folder OUTPUT_PATH for every participant defined in PEOPLE_PATH

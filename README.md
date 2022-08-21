@@ -55,3 +55,4 @@ To run the tests:
   * [ ] Based on unstructured free-text fields
   * [x] Command that generates a match table based on the remaining curated matches
 * [x] Create user-friendly configuration for mail/id column names
+* [ ] Automatically add IDs to inital documents

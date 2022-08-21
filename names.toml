@@ -1,6 +1,6 @@
 VALUE_IMPORTANCE_HIGH = 10
 VALUE_IMPORTANCE_MED = 6
-VALUE_IMPORTANCE_LOW = 1
+VALUE_IMPORTANCE_LOW = 2
 
 
 # Constants create matches
@@ -16,13 +16,14 @@ NOT_KNOWN = "I don't know"
 [match.range]
 AGE_COL = "How old are you?"
 TRUST_COL = "On a scale from 1 to 10, how easily do you trust (new) people? "
+WEIGHT_COL = "What is your body type? (1=underweight, 5=average, 10=obese)"
 # HAPPY_COL = "On a scale from 1 to 10, how happy are you in your life?"
 
 [match.mcq]
 SPORT_COL = "Which sport do you practice? [Please tick at least 1 box]"
 MOVIES_COL = "What genre of series and movies do you like? [Please tick at least 1 box]"
 MUSIC_COL = "What type of music do you listen to? [Please tick at least 1 box]"
-HOBBY_COL = "What else are you intersted in? [Please tick at least 1 box]"
+HOBBY_COL = "What else are you interested in? [Please tick at least 1 box]"
 TRAIT_COL = "How would you describe yourself?"
 LOVE_LANGUAGE_COL = "What's your love language?"
 IDEAL_DATE = "What is your ideal date?"
@@ -36,8 +37,32 @@ CHILDREN_COL = "Do you want kids in the future?"
 JUST_FRIENDS_COL = 'Do you think it is possible for men and women to be "just friends"?'
 PERFECT_DAY_COL = "Which one of the situations below describes best a \"perfect\" day for you?"
 KNOWS_BEST_COL = "Who knows you the best?"
+ASSOC_COL = "Are you part of an association?"
+ACTIVE_COL = "Are you more active or passive?"
+FREETIME_COL = "Are you a party person or a stay at home and binge-watch Netflix kind of person?"
 # SHOWER_COL = "Shower in the morning or in the evening?"
 
+[match.personality]
+INTRO_EXTROVERSION = [
+    "Do you feel more energised when you spend time with other people or when you spend time alone?",
+    "Is meeting new people something that you enjoy or avoid?",
+    "Do you consider yourself to be private and reserved or out-going and social?"
+]
+SENSING_INTUITION = [
+    "Do you prefer to focus on facts, details and go step-by-step or concepts, theories, and look at the bigger picture?",
+    "Do you tend to think about and appreciate things that are actual and practical or what can only be imagined?",
+    "Do you prefer to be realistic and rely on your common sense or imaginative and do it your own way?"
+]
+FEELING_THINKING = [
+    "Do you tend to make decisions based on your heart, feelings and emotions or head, reasoning and logic?",
+    "Do you prefer to engage with others in a close and personal way or in a somewhat distant and objective way?",
+    "Which have you been accused of being more often?"
+]
+JUDGING_PERCEIVING = [
+    "Do you view structures and organisations as liberating or restricting?",
+    "Do you prefer your activities to be structured and planned out or unstructured and spontaneous?",
+    "Do you prefer to control your environment or go with the flow?"
+]
 
 # Constants send notifications
 [notification]
@@ -47,4 +72,4 @@ FORM_ID = 'id'
 NAME_COL = 'What is your name?'
 MAIL_COL = 'What is your email address?'
 PRIVACY_COL = 'By filling this form you give consent that your personal data (i.e. all answers given in this form as well as your contact details) will be used during the matching process and will be sent to your matches afterwards.'
-DATETIME_COL = 'Horodateur'
+DATETIME_COL = 'Timestamp'
