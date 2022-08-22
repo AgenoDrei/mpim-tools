@@ -31,7 +31,7 @@ else:
     print(ROOT_PATH)
     raise FileNotFoundError("Could not find name definitions")
 
-comp_path = "mtbi_table.cvs"
+comp_path = "mtbi_table.csv"
 if os.path.exists(os.path.join(ROOT_PATH, comp_path)):
     comp_matrix = pd.read_csv(os.path.join(ROOT_PATH, comp_path), index_col=0)
 elif os.path.exists(os.path.join( Path(__file__), comp_path)):

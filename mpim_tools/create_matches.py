@@ -52,16 +52,18 @@ def create_matches(df, output_path, maximum_matches, mode='Relationship'):
             # match_row_dict = match_row.to_dict()
             match_row['fitness'] = match_fitness
             match_row['compatibility'] = match_compatibility
+
             matches_df = matches_df.append(match_row, ignore_index=True)
 
         # Get mix of similar, compatible and random matches for this person
         top_matches = matches_df.sort_values(by="fitness", ascending=False)
         top_matches = top_matches.head(maximum_matches - n["NUM_RANDOM_MATCHES"] - n["NUM_COMPATIBLE_MATCHES"]).copy()
         compatible_matches = matches_df.sort_values(by="compatibility", ascending=False).head(n["NUM_COMPATIBLE_MATCHES"]).copy()
-        random_matches = matches_df.sample(n=n["NUM_RANDOM_MATCHES"])
-
-        top_matches = top_matches.append(random_matches, ignore_index=True)
         top_matches = top_matches.append(compatible_matches, ignore_index=True)
+        if len(df) > maximum_matches:
+            random_matches = matches_df.sample(n=n["NUM_RANDOM_MATCHES"])
+            top_matches = top_matches.append(random_matches, ignore_index=True)
+        top_matches = top_matches.drop_duplicates(subset=[n['notification']['FORM_ID']])
 
         # Save matches for this person
         top_matches.to_csv(os.path.join(output_path, f'{row[n["notification"]["FORM_ID"]]}.csv'), index=False, sep=';')
@@ -84,8 +86,9 @@ def calc_match_fitness(person_a, person_b, mode):
     if mode == 'Relationship' or mode == 'FWB':
         trust_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(person_a[cm['range']['TRUST_COL']] - person_b[cm['range']['TRUST_COL']])
         trust_comp = int(trust_comp) if not np.isnan(trust_comp) else 0
-        weight_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(person_a[cm['range']['WEIGHT_COL']] - person_b[cm['range']['WEIGHT_COL']])
-        weight_comp = int(weight_comp) if not np.isnan(weight_comp) else 0
+        #weight_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(person_a[cm['range']['WEIGHT_COL']] - person_b[cm['range']['WEIGHT_COL']])
+        #weight_comp = int(weight_comp) if not np.isnan(weight_comp) else 0
+        weight_comp = 0
         fitness += weight_comp + trust_comp
 
     # MCQ categories
