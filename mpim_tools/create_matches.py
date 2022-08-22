@@ -47,10 +47,11 @@ def create_matches(df, output_path, maximum_matches, mode='Relationship'):
             match_fitness = calc_match_fitness(row, match_row, mode)
 
             # Measure similarity by personality traits
-            match_compatibility = compare_personalities(row, match_row, mode)
+            match_compatibility = compare_personalities(row, match_row)
 
             # match_row_dict = match_row.to_dict()
             match_row['fitness'] = match_fitness
+            match_row['compatibility'] = match_compatibility
             matches_df = matches_df.append(match_row, ignore_index=True)
 
         # Get mix of similar, compatible and random matches for this person
@@ -76,7 +77,6 @@ def calc_mcq_fitness(answer_a, answer_b):
 
 def calc_match_fitness(person_a, person_b, mode):
     fitness = 0
-
     # Ranged values
     age_comp = n['VALUE_IMPORTANCE_MED'] - np.absolute(int(person_a[cm['range']['AGE_COL']][:2]) - int(person_b[cm['range']['AGE_COL']][:2]))
     age_comp = int(age_comp) if not np.isnan(age_comp) else 0
@@ -100,17 +100,16 @@ def calc_match_fitness(person_a, person_b, mode):
             continue
         fitness += n['VALUE_IMPORTANCE_MED'] if person_a[v] == person_b[v] else 0
 
-
     # faculty_comp = n['VALUE_IMPORTANCE_HIGH'] if person_a[n['match']['FACULTY_COL']] == person_b[n['match']['FACULTY_COL']] else 0
     # hobby_comp = calc_mcq_fitness(person_a[n['match']['HOBBY_COL']], person_b[n['match']['HOBBY_COL']])
     # fitness = age_comp + faculty_comp + hobby_comp + trait_comp + ll_comp + belief_comp + prio_comp + marriage_comp + children_comp + trust_comp
     return fitness
 
 
-def compare_personalities(person_a, person_b, mode):
+def compare_personalities(person_a, person_b):
     personality_type_a = get_mbti_type(person_a)
     personality_type_b = get_mbti_type(person_b)
 
-    compatible = compare_types(personality_type_a, personality_type_b)
+    compatibility = compare_types(personality_type_a, personality_type_b)
 
-    return compatible
+    return compatibility
