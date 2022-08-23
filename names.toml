@@ -50,21 +50,25 @@ INTRO_EXTROVERSION = [
     "Is meeting new people something that you enjoy or avoid?",
     "Do you consider yourself to be private and reserved or out-going and social?"
 ]
+EXTROVERSION_ANS = ["With other people", "Enjoy", "Out-going and social"]
 SENSING_INTUITION = [
     "Do you prefer to focus on facts, details and go step-by-step or concepts, theories, and look at the bigger picture?",
     "Do you tend to think about and appreciate things that are actual and practical or what can only be imagined?",
     "Do you prefer to be realistic and rely on your common sense or imaginative and do it your own way?"
 ]
+SENSING_ANS = ["Facts, details and go step-by-step", "Things that are actual and practical", "Realistic and rely on your common sense"]
 FEELING_THINKING = [
     "Do you tend to make decisions based on your heart, feelings and emotions or head, reasoning and logic?",
     "Do you prefer to engage with others in a close and personal way or in a somewhat distant and objective way?",
     "Which have you been accused of being more often?"
 ]
+FEELING_ANS = ["Heart, feelings and emotions", "Close and personal way", "Being too emotional"]
 JUDGING_PERCEIVING = [
     "Do you view structures and organisations as liberating or restricting?",
     "Do you prefer your activities to be structured and planned out or unstructured and spontaneous?",
     "Do you prefer to control your environment or go with the flow?"
 ]
+JUDGING_ANS = ["Liberating", "Structured and planned out", "Control your environment"]
 
 # Constants send notifications
 [notification]

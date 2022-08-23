@@ -3,7 +3,8 @@ import numpy as np
 import pandas as pd
 from tqdm import tqdm
 from mpim_tools.startup import names as n
-from mpim_tools.utils import cosine_similarity_words, get_mbti_type, compare_types
+from mpim_tools.process_details import get_mbti_type, compare_types, calc_mcq_fitness
+
 
 cm = n['match']
 
@@ -45,11 +46,9 @@ def create_matches(df, output_path, maximum_matches, mode='Relationship'):
 
             # Calculate match similarity based on questions
             match_fitness = calc_match_fitness(row, match_row, mode)
-
             # Measure similarity by personality traits
             match_compatibility = compare_personalities(row, match_row)
 
-            # match_row_dict = match_row.to_dict()
             match_row['fitness'] = match_fitness
             match_row['compatibility'] = match_compatibility
 
@@ -63,18 +62,10 @@ def create_matches(df, output_path, maximum_matches, mode='Relationship'):
         if len(df) > maximum_matches:
             random_matches = matches_df.sample(n=n["NUM_RANDOM_MATCHES"])
             top_matches = top_matches.append(random_matches, ignore_index=True)
-        top_matches = top_matches.drop_duplicates(subset=[n['notification']['FORM_ID']])
 
         # Save matches for this person
+        top_matches = top_matches.drop_duplicates(subset=[n['notification']['FORM_ID']])
         top_matches.to_csv(os.path.join(output_path, f'{row[n["notification"]["FORM_ID"]]}.csv'), index=False, sep=';')
-
-
-def calc_mcq_fitness(answer_a, answer_b):
-    answer_a, answer_b = answer_a.split(", "), answer_b.split(", ")
-    cos_sim = cosine_similarity_words(answer_a, answer_b)
-
-    count = cos_sim * n['VALUE_IMPORTANCE_HIGH']
-    return int(np.round(count))
 
 
 def calc_match_fitness(person_a, person_b, mode):
@@ -93,19 +84,16 @@ def calc_match_fitness(person_a, person_b, mode):
 
     # MCQ categories
     for k, v in cm['mcq'].items():
-        if person_a.get(v) == None:
+        if person_a.get(v) is None:
             continue
         fitness += calc_mcq_fitness(person_a[v], person_b[v])
 
     # Simple questions
     for k, v in cm['simple'].items():
-        if person_a.get(v) == None:
+        if person_a.get(v) is None:
             continue
         fitness += n['VALUE_IMPORTANCE_MED'] if person_a[v] == person_b[v] else 0
 
-    # faculty_comp = n['VALUE_IMPORTANCE_HIGH'] if person_a[n['match']['FACULTY_COL']] == person_b[n['match']['FACULTY_COL']] else 0
-    # hobby_comp = calc_mcq_fitness(person_a[n['match']['HOBBY_COL']], person_b[n['match']['HOBBY_COL']])
-    # fitness = age_comp + faculty_comp + hobby_comp + trait_comp + ll_comp + belief_comp + prio_comp + marriage_comp + children_comp + trust_comp
     return fitness
 
 
