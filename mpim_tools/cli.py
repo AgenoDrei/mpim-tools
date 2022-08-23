@@ -42,6 +42,9 @@ def match(people_path, output_path, maximum_matches, mode):
     if os.path.exists(output_path) and len(os.listdir(output_path)) != 0:
         click.echo("Output path already exists")
         return -1
+    if names['notification']['FORM_ID'] not in people_df.columns:
+        people_df.insert(0, names['notification']['FORM_ID'], range(1, 1 + len(people_df)))
+
     if not os.path.exists(output_path): os.mkdir(output_path)
     create_matches(people_df, output_path, maximum_matches, mode=mode)
 
