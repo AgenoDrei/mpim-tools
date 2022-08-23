@@ -28,13 +28,7 @@ def send_mails(matches_df, people_df, mode, debug=False):
             match = load_person_by_id(match_id, people_df)
             if not match:
                 continue
-            try:
-                del match[cols['FORM_ID']]
-                del match[cols['PRIVACY_COL']]
-                del match[cols['DATETIME_COL']]
-                del match['Timestamp']
-            except KeyError:
-                pass
+            match = delete_questions_from_person(match)
             match = {k: v for k, v in match.items() if not (type(v) == float and math.isnan(v))}
             matches.append(match)
 
@@ -64,3 +58,20 @@ def send_html_mail(mail_body, recipient, mode, debug=True):
         print(f'Mail to {recipient} successfully sent!')
     else:
         print(f'There was a problem sending the email to {recipient}')
+
+
+def delete_questions_from_person(person):
+    del_cols = [cols['FORM_ID'], cols['PRIVACY_COL'], cols['DATETIME_COL'], 'Timestamp']
+    del_cols.extend(names['match']['personality']['INTRO_EXTROVERSION'])
+    del_cols.extend(names['match']['personality']['SENSING_INTUITION'])
+    del_cols.extend(names['match']['personality']['FEELING_THINKING'])
+    del_cols.extend(names['match']['personality']['JUDGING_PERCEIVING'])
+
+    for elm in del_cols:
+        try:
+            del person[elm]
+        except KeyError:
+            pass
+
+    return person
+
