@@ -50,9 +50,9 @@ To run the tests:
   * [x] Add all infos from the google form to the generated mail 
   * [x] Get an actual domain for the emails
   * [x] HTML email templates
-* [ ] Create matching algorithm
+* [x] Create matching algorithm
   * [x] Based on categorical information
-  * [ ] Based on unstructured free-text fields
+  * [x] Based on personality information
   * [x] Command that generates a match table based on the remaining curated matches
 * [x] Create user-friendly configuration for mail/id column names
 * [ ] Automatically add IDs to inital documents
