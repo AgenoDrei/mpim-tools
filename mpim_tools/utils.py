@@ -3,6 +3,9 @@ import math
 from mpim_tools.startup import names
 
 
+cm = names['match']
+
+
 def load_person_by_id(person_id, df):
     person = df.loc[df[names['notification']['FORM_ID']] == int(person_id)]
 
@@ -25,3 +28,11 @@ def cosine_similarity_words(words1, words2):
     return res
 
 
+def adjust_orientations(df):
+    for i, row in df.iterrows():
+        orientation = row[cm['ORIENTATION_COL']]
+        if orientation in cm['DEF_HOMO']:
+            df.loc[i, cm['ORIENTATION_COL']] = cm['HOMO']
+            orientation = cm['HOMO']
+        if orientation != cm['HOMO'] and orientation != cm['HETERO'] and orientation != cm['BI']:
+            df.loc[i, cm['ORIENTATION_COL']] = cm['NOT_KNOWN']

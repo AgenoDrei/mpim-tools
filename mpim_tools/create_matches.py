@@ -4,27 +4,22 @@ import pandas as pd
 from tqdm import tqdm
 from mpim_tools.startup import names as n
 from mpim_tools.process_details import get_mbti_type, compare_types, calc_mcq_fitness
-
+from mpim_tools.utils import adjust_orientations
 
 cm = n['match']
 
 
 def create_matches(df, output_path, maximum_matches, mode='Relationship'):
+    if mode == 'Relationship' or mode == 'FWB':
+        adjust_orientations(df)
+
     for i, row in tqdm(df.iterrows(), total=len(df)):
         # Create table with matches for the current person
         matches_df = pd.DataFrame(columns=df.columns)
         matches_df['fitness'] = -1
         matches_df['compatibility'] = -1
         gender = row[cm['GENDER_COL']]
-        orientation = None
-
-        if mode == 'Relationship' or mode == 'FWB':
-            orientation = row[cm['ORIENTATION_COL']]
-            if orientation in cm['DEF_HOMO']:
-                orientation = cm['HOMO']
-            if orientation != cm['HOMO'] and orientation != cm['HETERO'] and orientation != cm['BI']:
-                # TODO: Match non-binary folks with each other or other strategy
-                continue
+        orientation = row[cm['ORIENTATION_COL']]
 
         # Compare the current person with everyone else
         for j, match_row in df.iterrows():
@@ -41,7 +36,7 @@ def create_matches(df, output_path, maximum_matches, mode='Relationship'):
                     continue
                 if orientation == cm['BI'] and match_gender != gender and match_orientation == cm['HOMO']:
                     continue
-                if match_orientation == cm['NOT_KNOWN']:
+                if match_orientation == cm['NOT_KNOWN'] and orientation == cm['NOT_KNOWN']:
                     continue
 
             # Calculate match similarity based on questions

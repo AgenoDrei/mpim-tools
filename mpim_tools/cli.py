@@ -44,6 +44,7 @@ def match(people_path, output_path, maximum_matches, mode):
         return -1
     if names['notification']['FORM_ID'] not in people_df.columns:
         people_df.insert(0, names['notification']['FORM_ID'], range(1, 1 + len(people_df)))
+        click.echo("Created identifier column " + names['notification']['FORM_ID'])
 
     if not os.path.exists(output_path): os.mkdir(output_path)
     create_matches(people_df, output_path, maximum_matches, mode=mode)
@@ -84,6 +85,10 @@ def notify(matches_path, people_path, debug, mode):
     print(f"Processing matches from {matches_path} for mode {mode}, debug status {debug}")
     matches_df = pd.read_excel(matches_path)
     people_df = pd.read_excel(people_path)
+
+    if names['notification']['FORM_ID'] not in people_df.columns:
+        people_df.insert(0, names['notification']['FORM_ID'], range(1, 1 + len(people_df)))
+        click.echo("Created identifier column " + names['notification']['FORM_ID'])
 
     send_mails(matches_df, people_df, mode, debug=debug)
 

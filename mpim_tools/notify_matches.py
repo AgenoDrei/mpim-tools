@@ -61,7 +61,7 @@ def send_html_mail(mail_body, recipient, mode, debug=True):
 
 
 def delete_questions_from_person(person):
-    del_cols = [cols['FORM_ID'], cols['PRIVACY_COL'], cols['DATETIME_COL'], 'Timestamp']
+    del_cols = [cols['FORM_ID'], cols['PRIVACY_COL'], cols['DATETIME_COL'], 'Timestamp', 'How did you hear about Meet People in Maastricht?']
     del_cols.extend(names['match']['personality']['INTRO_EXTROVERSION'])
     del_cols.extend(names['match']['personality']['SENSING_INTUITION'])
     del_cols.extend(names['match']['personality']['FEELING_THINKING'])
