@@ -1,5 +1,5 @@
 # mpim-tools
-Meet people in Maastricht - tools to automate matching workflow
+Software for Meet people in Maastricht 2021 - Toolbox. Program ingests tables from google forms where participants entered their preferences in potenial partners. This packages automates creating similar matches, ranking them and sending out mails with the best results to each participant.
 
 ## Installation
 
@@ -55,4 +55,4 @@ To run the tests:
   * [x] Based on personality information
   * [x] Command that generates a match table based on the remaining curated matches
 * [x] Create user-friendly configuration for mail/id column names
-* [ ] Automatically add IDs to inital documents
+* [x] Automatically add IDs to inital documents
